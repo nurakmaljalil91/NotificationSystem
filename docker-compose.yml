@@ -1,0 +1,6 @@
+services:
+  notificationsystem:
+    image: ${DOCKER_REGISTRY-}notificationsystem
+    build:
+      context: .
+      dockerfile: Dockerfile
