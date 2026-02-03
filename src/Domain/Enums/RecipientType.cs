@@ -11,18 +11,22 @@ public enum RecipientType
     Unknown = 0,
 
     /// <summary>
-    /// Internal staff recipient.
+    /// A single human recipient.
     /// </summary>
-    Staff = 1,
+    Individual = 1,
 
     /// <summary>
-    /// Customer recipient.
+    /// An organization or business recipient.
     /// </summary>
-    Customer = 2,
+    Organization = 2,
+
+    /// <summary>
+    /// A group of recipients.
+    /// </summary>
+    Group = 3,
 
     /// <summary>
     /// System or integration recipient.
     /// </summary>
-    System = 3
+    System = 4
 }
-
