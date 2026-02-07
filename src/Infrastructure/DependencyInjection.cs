@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using Application.Common.Interfaces;
+using Infrastructure.Consumers;
 using Infrastructure.Data;
 using Infrastructure.Data.Interceptors;
+using Infrastructure.Messaging;
 using Infrastructure.Services;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -81,6 +84,26 @@ public static class DependencyInjection
 
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddTransient<IClockService, ClockService>();
+
+        var messageBrokerSettings = new MessageBrokerSettings();
+        configuration.GetSection(MessageBrokerSettings.SectionName).Bind(messageBrokerSettings);
+
+        services.AddMassTransit(configurator =>
+        {
+            configurator.AddConsumer<TransactionSucceededConsumer, TransactionSucceededConsumerDefinition>();
+            configurator.AddConsumer<NotificationDeliveryEnqueuedConsumer, NotificationDeliveryEnqueuedConsumerDefinition>();
+
+            configurator.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(messageBrokerSettings.Host, messageBrokerSettings.VirtualHost, host =>
+                {
+                    host.Username(messageBrokerSettings.Username);
+                    host.Password(messageBrokerSettings.Password);
+                });
+
+                cfg.ConfigureEndpoints(context);
+            });
+        });
 
         return services;
     }

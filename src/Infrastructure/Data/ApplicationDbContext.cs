@@ -10,7 +10,7 @@ namespace Infrastructure.Data;
 
 /// <summary>
 /// Represents the Entity Framework database context for the application,
-/// providing access to <see cref="TodoList"/> and <see cref="TodoItem"/> entities.
+/// providing access to application entities.
 /// </summary>
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
@@ -29,6 +29,15 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
     /// <inheritdoc />
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();
+
+    /// <inheritdoc />
+    public DbSet<Notification> Notifications => Set<Notification>();
+
+    /// <inheritdoc />
+    public DbSet<NotificationRecipient> NotificationRecipients => Set<NotificationRecipient>();
+
+    /// <inheritdoc />
+    public DbSet<NotificationDelivery> NotificationDeliveries => Set<NotificationDelivery>();
 
     /// <summary>
     /// Configures the entity model for the context.

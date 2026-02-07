@@ -29,6 +29,21 @@ public sealed class TestApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();
 
     /// <summary>
+    /// Gets the <see cref="DbSet{Notification}"/> representing the collection of notifications.
+    /// </summary>
+    public DbSet<Notification> Notifications => Set<Notification>();
+
+    /// <summary>
+    /// Gets the <see cref="DbSet{NotificationRecipient}"/> representing the collection of notification recipients.
+    /// </summary>
+    public DbSet<NotificationRecipient> NotificationRecipients => Set<NotificationRecipient>();
+
+    /// <summary>
+    /// Gets the <see cref="DbSet{NotificationDelivery}"/> representing the collection of notification deliveries.
+    /// </summary>
+    public DbSet<NotificationDelivery> NotificationDeliveries => Set<NotificationDelivery>();
+
+    /// <summary>
     /// Configures the entity mappings for the context.
     /// </summary>
     /// <param name="modelBuilder">The builder being used to construct the model for this context.</param>
@@ -48,6 +63,34 @@ public sealed class TestApplicationDbContext : DbContext, IApplicationDbContext
             builder.HasOne(x => x.List)
                 .WithMany(x => x.Items)
                 .HasForeignKey(x => x.ListId);
+        });
+
+        modelBuilder.Entity<Notification>(builder =>
+        {
+            builder.HasKey(x => x.Id);
+            builder.Navigation(x => x.Recipients)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.HasMany(x => x.Recipients)
+                .WithOne(x => x.Notification)
+                .HasForeignKey(x => x.NotificationId);
+        });
+
+        modelBuilder.Entity<NotificationRecipient>(builder =>
+        {
+            builder.HasKey(x => x.Id);
+            builder.Navigation(x => x.Deliveries)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
+            builder.HasMany(x => x.Deliveries)
+                .WithOne(x => x.Recipient)
+                .HasForeignKey(x => x.RecipientId);
+        });
+
+        modelBuilder.Entity<NotificationDelivery>(builder =>
+        {
+            builder.HasKey(x => x.Id);
+            builder.HasOne(x => x.Recipient)
+                .WithMany(x => x.Deliveries)
+                .HasForeignKey(x => x.RecipientId);
         });
     }
 }
