@@ -119,6 +119,8 @@ public static class DependencyInjection
         services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
 
         services.AddTransient<ExceptionHandlingMiddleware>();
+        services.AddSignalR();
+        services.AddSingleton<INotificationRealtimePublisher, SignalRNotificationRealtimePublisher>();
 
         return services;
     }

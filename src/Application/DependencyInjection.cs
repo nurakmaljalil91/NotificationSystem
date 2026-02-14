@@ -4,6 +4,11 @@ using System.Reflection;
 using System.Text;
 using Application.Common.Behaviours;
 using Application.Common.Models;
+using Application.Common.Interfaces;
+using Application.Common.Services;
+using Application.Notifications.Commands;
+using Application.Notifications.Models;
+using Application.Notifications.Queries;
 using Application.TodoItems.Commands;
 using Application.TodoItems.Models;
 using Application.TodoItems.Queries;
@@ -41,6 +46,11 @@ public static class DependencyInjection
         services.AddScoped<IRequestHandler<CreateTodoListCommand, BaseResponse<TodoListDto>>, CreateTodoListCommandHandler>();
         services.AddScoped<IRequestHandler<UpdateTodoListCommand, BaseResponse<TodoListDto>>, UpdateTodoListCommandHandler>();
         services.AddScoped<IRequestHandler<DeleteTodoListCommand, BaseResponse<string>>, DeleteTodoListCommandHandler>();
+        services.AddScoped<IRequestHandler<GetNotificationsQuery, BaseResponse<PaginatedEnumerable<NotificationItemDto>>>,
+            GetNotificationsQueryHandler>();
+        services.AddScoped<IRequestHandler<MarkNotificationReadCommand, BaseResponse<NotificationItemDto>>,
+            MarkNotificationReadCommandHandler>();
+        services.AddSingleton<INotificationRealtimePublisher, NullNotificationRealtimePublisher>();
         return services;
     }
 }

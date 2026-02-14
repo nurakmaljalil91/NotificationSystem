@@ -16,9 +16,9 @@
 - [x] Add stub adapters and update the delivery status (Sent/Failed/Retrying).
 
 ## Client access
-- [ ] Add query API to list notifications per recipient.
-- [ ] Add API to mark notifications as read.
-- [ ] (Optional) Add SignalR/WebSocket for real-time in-app updates.
+- [x] Add query API to list notifications per recipient.
+- [x] Add API to mark notifications as read.
+- [x] (Optional) Add SignalR/WebSocket for real-time in-app updates.
 
 ## Ops and tests
 - [ ] Add health checks for DB and RabbitMQ.

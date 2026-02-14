@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interfaces;
 using Application.Common.Messaging.Events;
+using Application.Common.Services;
 using Infrastructure.Consumers;
 using Infrastructure.Data;
 using Infrastructure.Services;
@@ -116,6 +117,7 @@ public class NotificationRequestedConsumerTests
             options.UseInMemoryDatabase($"notifications-{Guid.NewGuid()}"));
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         services.AddSingleton<IClockService, ClockService>();
+        services.AddSingleton<INotificationRealtimePublisher, NullNotificationRealtimePublisher>();
         services.AddSingleton<INotificationPublisher, FakeNotificationPublisher>();
         services.AddSingleton<ILogger<NotificationRequestedHandler>>(
             _ => NullLogger<NotificationRequestedHandler>.Instance);

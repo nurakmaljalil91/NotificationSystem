@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interfaces;
 using Application.Common.Messaging.Events;
+using Application.Notifications.Models;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ public class NotificationRequestedHandler
     private readonly IApplicationDbContext _context;
     private readonly IClockService _clockService;
     private readonly INotificationPublisher _notificationPublisher;
+    private readonly INotificationRealtimePublisher _realtimePublisher;
     private readonly ILogger<NotificationRequestedHandler> _logger;
 
     /// <summary>
@@ -31,11 +33,13 @@ public class NotificationRequestedHandler
         IApplicationDbContext context,
         IClockService clockService,
         INotificationPublisher notificationPublisher,
+        INotificationRealtimePublisher realtimePublisher,
         ILogger<NotificationRequestedHandler> logger)
     {
         _context = context;
         _clockService = clockService;
         _notificationPublisher = notificationPublisher;
+        _realtimePublisher = realtimePublisher;
         _logger = logger;
     }
 
@@ -140,6 +144,20 @@ public class NotificationRequestedHandler
                     Channel = delivery.Channel,
                     EnqueuedAt = _clockService.Now.ToDateTimeOffset()
                 },
+                cancellationToken);
+        }
+
+        foreach (var recipient in notification.Recipients)
+        {
+            if (!recipient.InAppEnabled || string.IsNullOrWhiteSpace(recipient.RecipientId))
+            {
+                continue;
+            }
+
+            var payload = NotificationItemDto.FromEntities(notification, recipient);
+            await _realtimePublisher.PublishNotificationCreatedAsync(
+                recipient.RecipientId!,
+                payload,
                 cancellationToken);
         }
     }

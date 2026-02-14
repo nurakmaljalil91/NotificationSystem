@@ -10,6 +10,7 @@ using Serilog;
 using Serilog.Events;
 using WebAPI;
 using WebAPI.Middlewares;
+using WebAPI.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -112,6 +113,7 @@ try
     }).AllowAnonymous();
 
     app.MapControllers();
+    app.MapHub<NotificationHub>("/hubs/notifications");
 
     await app.RunAsync();
 }
