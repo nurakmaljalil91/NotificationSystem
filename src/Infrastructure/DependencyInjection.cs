@@ -90,7 +90,6 @@ public static class DependencyInjection
 
         services.AddMassTransit(configurator =>
         {
-            configurator.AddConsumer<TransactionSucceededConsumer, TransactionSucceededConsumerDefinition>();
             configurator.AddConsumer<NotificationDeliveryEnqueuedConsumer, NotificationDeliveryEnqueuedConsumerDefinition>();
 
             configurator.UsingRabbitMq((context, cfg) =>

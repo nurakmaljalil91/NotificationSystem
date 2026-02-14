@@ -1,44 +1,26 @@
 # NotificationSystem TODO
 
-## Core design
-- [ ] Define message contracts for inbound events (e.g., ClaimStatusChanged).
-- [ ] Define notification payload model (recipient, channels, template, metadata).
-- [ ] Define persistence schema for in-app notifications and delivery audit trail.
-- [ ] Define idempotency strategy (message id + recipient + channel).
+## Goal: generic notification microservice
+- [ ] Define inbound contract `NotificationRequestedV1` (shared package or `lib/`).
+- [ ] Document required fields for idempotency and audit (`SourceService`, `SourceEventId`, `CorrelationId`).
 
-## Messaging (RabbitMQ + MassTransit)
-- [ ] Configure RabbitMQ connection settings and exchanges.
-- [ ] Add MassTransit configuration (consumers, retries, outbox/inbox).
-- [ ] Implement consumers for incoming domain events.
-- [ ] Add dead-letter handling and poison message strategy.
+## Inbound processing (consume + persist)
+- [ ] Implement consumer for `NotificationRequestedV1` (MassTransit).
+- [ ] Idempotency check on `Notification.SourceService + SourceEventId`.
+- [ ] Persist `Notification`, `NotificationRecipient`, `NotificationDelivery` before any sends.
+- [ ] Publish `NotificationDeliveryEnqueuedV1` per recipient/channel.
 
-## Notification pipeline
-- [ ] Implement notification router (choose channels per event/recipient).
-- [ ] Implement persistence of in-app notifications before sending.
-- [ ] Implement delivery state machine (Queued, Sent, Failed, Retrying).
-- [ ] Add provider abstractions (Email, SMS, WhatsApp, Push).
-- [ ] Implement initial provider adapters (stubs or real integrations).
+## Delivery pipeline
+- [ ] Keep `NotificationDeliveryEnqueuedConsumer` to mark delivery as sending.
+- [ ] Add provider interfaces (Email/SMS/WhatsApp/Push).
+- [ ] Add stub adapters and update delivery status (Sent/Failed/Retrying).
 
-## Events back out
-- [ ] Emit NotificationProcessed / NotificationFailed events when done.
-- [ ] Add correlation IDs for traceability across services.
+## Client access
+- [ ] Add query API to list notifications per recipient.
+- [ ] Add API to mark notifications as read.
+- [ ] (Optional) Add SignalR/WebSocket for real-time in-app updates.
 
-## Templates and localization
-- [ ] Define template storage and rendering mechanism.
-- [ ] Add localization support if required (culture, timezone).
-
-## Security and compliance
-- [ ] Store secrets in environment/secret manager.
-- [ ] PII handling policy for notification data.
-- [ ] Audit logging for all sends and failures.
-
-## Observability and ops
-- [ ] Add structured logging and metrics.
-- [ ] Add health checks (RabbitMQ, database).
-- [ ] Add dashboards and alerting plan.
-
-## Testing
-- [ ] Unit tests for consumers and routing rules.
-- [ ] Integration tests with RabbitMQ and database.
-- [ ] Contract tests for event schemas.
-
+## Ops and tests
+- [ ] Add health checks for DB and RabbitMQ.
+- [ ] Add unit tests for consumer + idempotency.
+- [ ] Add integration test covering end-to-end persistence.

@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/lib/">
     <Project Path="lib/Mediator/Mediator.csproj" Id="01ca3313-9315-4683-8e2f-d376cd6d0a93" />
+    <Project Path="lib/Notification.Contracts/Notification.Contracts.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
