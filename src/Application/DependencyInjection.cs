@@ -9,12 +9,6 @@ using Application.Common.Services;
 using Application.Notifications.Commands;
 using Application.Notifications.Models;
 using Application.Notifications.Queries;
-using Application.TodoItems.Commands;
-using Application.TodoItems.Models;
-using Application.TodoItems.Queries;
-using Application.TodoLists.Commands;
-using Application.TodoLists.Models;
-using Application.TodoLists.Queries;
 using Domain.Common;
 using FluentValidation;
 using Mediator;
@@ -36,16 +30,6 @@ public static class DependencyInjection
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         services.AddScoped<IMediator, Mediator.Mediator>();
-        services.AddScoped<IRequestHandler<GetTodoItemsQuery, BaseResponse<PaginatedEnumerable<TodoItemDto>>>,
-            GetTodoItemsQueryHandler>();
-        services.AddScoped<IRequestHandler<CreateTodoItemCommand, BaseResponse<TodoItemDto>>, CreateTodoItemCommandHandler>();
-        services.AddScoped<IRequestHandler<UpdateTodoItemComand, BaseResponse<TodoItemDto>>, UpdateTodoItemCommandHandler>();
-        services.AddScoped<IRequestHandler<DeleteTodoItemCommand, BaseResponse<object>>, DeleteTodoItemCommandHandler>();
-        services.AddScoped<IRequestHandler<GetTodoListsQuery, BaseResponse<PaginatedEnumerable<TodoListDto>>>,
-            GetTodoListsQueryHandler>();
-        services.AddScoped<IRequestHandler<CreateTodoListCommand, BaseResponse<TodoListDto>>, CreateTodoListCommandHandler>();
-        services.AddScoped<IRequestHandler<UpdateTodoListCommand, BaseResponse<TodoListDto>>, UpdateTodoListCommandHandler>();
-        services.AddScoped<IRequestHandler<DeleteTodoListCommand, BaseResponse<string>>, DeleteTodoListCommandHandler>();
         services.AddScoped<IRequestHandler<GetNotificationsQuery, BaseResponse<PaginatedEnumerable<NotificationItemDto>>>,
             GetNotificationsQueryHandler>();
         services.AddScoped<IRequestHandler<MarkNotificationReadCommand, BaseResponse<NotificationItemDto>>,

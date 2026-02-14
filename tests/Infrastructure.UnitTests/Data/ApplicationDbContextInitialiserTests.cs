@@ -1,4 +1,4 @@
-using Infrastructure.Data;
+﻿using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -25,9 +25,13 @@ public class ApplicationDbContextInitialiserTests
 
         await initialiser.TrySeedAsync();
 
-        var todoList = await context.TodoLists.Include(list => list.Items).SingleAsync();
+        var notification = await context.Notifications
+            .Include(item => item.Recipients)
+            .ThenInclude(item => item.Deliveries)
+            .SingleOrDefaultAsync();
 
-        Assert.Equal("Todo List", todoList.Title);
-        Assert.Equal(4, todoList.Items.Count);
+        Assert.NotNull(notification);
+        Assert.Single(notification!.Recipients);
+        Assert.Single(notification.Recipients[0].Deliveries);
     }
 }
