@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql" />
+    <PackageReference Include="AspNetCore.HealthChecks.RabbitMQ" />
+    <PackageReference Include="RabbitMQ.Client" />
     <PackageReference Include="EFCore.NamingConventions" />
     <PackageReference Include="MassTransit" />
     <PackageReference Include="MassTransit.RabbitMQ" />

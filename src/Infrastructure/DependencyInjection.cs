@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using RabbitMQ.Client;
 
 namespace Infrastructure;
 
@@ -98,6 +99,31 @@ public static class DependencyInjection
         var messageBrokerSettings = new MessageBrokerSettings();
         configuration.GetSection(MessageBrokerSettings.SectionName).Bind(messageBrokerSettings);
         var useInMemoryMessageBroker = configuration.GetValue<bool>("MessageBroker:UseInMemory");
+
+        if (!useInMemoryMessageBroker)
+        {
+            var virtualHost = messageBrokerSettings.VirtualHost?.Trim('/');
+            var rabbitMqUri = new UriBuilder
+            {
+                Scheme = "amqp",
+                Host = messageBrokerSettings.Host,
+                UserName = messageBrokerSettings.Username,
+                Password = messageBrokerSettings.Password,
+                Path = string.IsNullOrWhiteSpace(virtualHost) ? "/" : $"/{virtualHost}"
+            }.Uri;
+
+            healthChecks.AddRabbitMQ(
+                serviceProvider =>
+                {
+                    var factory = new ConnectionFactory
+                    {
+                        Uri = rabbitMqUri
+                    };
+                    return factory.CreateConnectionAsync().GetAwaiter().GetResult();
+                },
+                name: "rabbitmq",
+                tags: new[] { "ready" });
+        }
 
         services.AddMassTransit(configurator =>
         {
