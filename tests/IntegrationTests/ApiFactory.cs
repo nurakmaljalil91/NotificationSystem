@@ -15,6 +15,7 @@ public class ApiFactory : WebApplicationFactory<Program>
             var settings = new Dictionary<string, string?>
             {
                 ["UseInMemoryDatabase"] = "true",
+                ["MessageBroker:UseInMemory"] = "true",
                 ["Jwt:Issuer"] = "IntegrationTests",
                 ["Jwt:Audience"] = "IntegrationTests",
                 ["Jwt:Key"] = "integration-tests-super-secret-key-1234567890",

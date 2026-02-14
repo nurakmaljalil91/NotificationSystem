@@ -21,7 +21,7 @@ public class NotificationEntityConfigurationTests
             .Options;
 
         using var context = new ApplicationDbContext(options);
-        var notificationEntity = context.Model.FindEntityType(typeof(Notification));
+        var notificationEntity = context.Model.FindEntityType(typeof(Domain.Entities.Notification));
         var recipientEntity = context.Model.FindEntityType(typeof(NotificationRecipient));
         var deliveryEntity = context.Model.FindEntityType(typeof(NotificationDelivery));
 
@@ -29,7 +29,7 @@ public class NotificationEntityConfigurationTests
         Assert.NotNull(recipientEntity);
         Assert.NotNull(deliveryEntity);
 
-        var recipientsNavigation = notificationEntity!.FindNavigation(nameof(Notification.Recipients));
+        var recipientsNavigation = notificationEntity!.FindNavigation(nameof(Domain.Entities.Notification.Recipients));
         Assert.NotNull(recipientsNavigation);
         Assert.Equal(typeof(NotificationRecipient), recipientsNavigation!.TargetEntityType.ClrType);
         Assert.Equal(

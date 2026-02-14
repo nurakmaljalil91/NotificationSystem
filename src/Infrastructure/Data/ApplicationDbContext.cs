@@ -31,7 +31,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();
 
     /// <inheritdoc />
-    public DbSet<Notification> Notifications => Set<Notification>();
+    public DbSet<Domain.Entities.Notification> Notifications => Set<Domain.Entities.Notification>();
 
     /// <inheritdoc />
     public DbSet<NotificationRecipient> NotificationRecipients => Set<NotificationRecipient>();

@@ -7,13 +7,13 @@ namespace Infrastructure.Data.Configurations;
 /// <summary>
 /// Provides the Entity Framework configuration for the <see cref="Notification"/> entity.
 /// </summary>
-public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
+public class NotificationConfiguration : IEntityTypeConfiguration<Domain.Entities.Notification>
 {
     /// <summary>
     /// Configures the <see cref="Notification"/> entity type for Entity Framework.
     /// </summary>
     /// <param name="builder">The builder to be used to configure the entity type.</param>
-    public void Configure(EntityTypeBuilder<Notification> builder)
+    public void Configure(EntityTypeBuilder<Domain.Entities.Notification> builder)
     {
         builder
             .Navigation(x => x.Recipients)

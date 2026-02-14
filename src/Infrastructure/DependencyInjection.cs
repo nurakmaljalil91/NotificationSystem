@@ -84,13 +84,26 @@ public static class DependencyInjection
 
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddTransient<IClockService, ClockService>();
+        services.AddTransient<INotificationPublisher, NotificationPublisher>();
+        services.AddTransient<NotificationRequestedHandler>();
 
         var messageBrokerSettings = new MessageBrokerSettings();
         configuration.GetSection(MessageBrokerSettings.SectionName).Bind(messageBrokerSettings);
+        var useInMemoryMessageBroker = configuration.GetValue<bool>("MessageBroker:UseInMemory");
 
         services.AddMassTransit(configurator =>
         {
+            configurator.AddConsumer<NotificationRequestedConsumer, NotificationRequestedConsumerDefinition>();
             configurator.AddConsumer<NotificationDeliveryEnqueuedConsumer, NotificationDeliveryEnqueuedConsumerDefinition>();
+
+            if (useInMemoryMessageBroker)
+            {
+                configurator.UsingInMemory((context, cfg) =>
+                {
+                    cfg.ConfigureEndpoints(context);
+                });
+                return;
+            }
 
             configurator.UsingRabbitMq((context, cfg) =>
             {

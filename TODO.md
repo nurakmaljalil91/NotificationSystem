@@ -1,19 +1,19 @@
 # NotificationSystem TODO
 
 ## Goal: generic notification microservice
-- [ ] Define inbound contract `NotificationRequestedV1` (shared package or `lib/`).
-- [ ] Document required fields for idempotency and audit (`SourceService`, `SourceEventId`, `CorrelationId`).
+- [x] Define inbound contract `NotificationRequestedV1` (shared package or `lib/`).
+- [x] Document required fields for idempotency and audit (`SourceService`, `SourceEventId`, `CorrelationId`).
 
 ## Inbound processing (consume + persist)
-- [ ] Implement consumer for `NotificationRequestedV1` (MassTransit).
-- [ ] Idempotency check on `Notification.SourceService + SourceEventId`.
-- [ ] Persist `Notification`, `NotificationRecipient`, `NotificationDelivery` before any sends.
-- [ ] Publish `NotificationDeliveryEnqueuedV1` per recipient/channel.
+- [x] Implement consumer for `NotificationRequestedV1` (MassTransit).
+- [x] Idempotency check on `Notification.SourceService + SourceEventId`.
+- [x] Persist `Notification`, `NotificationRecipient`, `NotificationDelivery` before any sends.
+- [x] Publish `NotificationDeliveryEnqueuedV1` per recipient/channel.
 
 ## Delivery pipeline
 - [ ] Keep `NotificationDeliveryEnqueuedConsumer` to mark delivery as sending.
 - [ ] Add provider interfaces (Email/SMS/WhatsApp/Push).
-- [ ] Add stub adapters and update delivery status (Sent/Failed/Retrying).
+- [ ] Add stub adapters and update the delivery status (Sent/Failed/Retrying).
 
 ## Client access
 - [ ] Add query API to list notifications per recipient.
