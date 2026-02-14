@@ -11,9 +11,9 @@
 - [x] Publish `NotificationDeliveryEnqueuedV1` per recipient/channel.
 
 ## Delivery pipeline
-- [ ] Keep `NotificationDeliveryEnqueuedConsumer` to mark delivery as sending.
-- [ ] Add provider interfaces (Email/SMS/WhatsApp/Push).
-- [ ] Add stub adapters and update the delivery status (Sent/Failed/Retrying).
+- [x] Keep `NotificationDeliveryEnqueuedConsumer` to mark delivery as sending.
+- [x] Add provider interfaces (Email/SMS/WhatsApp/Push).
+- [x] Add stub adapters and update the delivery status (Sent/Failed/Retrying).
 
 ## Client access
 - [ ] Add query API to list notifications per recipient.
@@ -22,5 +22,5 @@
 
 ## Ops and tests
 - [ ] Add health checks for DB and RabbitMQ.
-- [ ] Add unit tests for consumer + idempotency.
-- [ ] Add integration test covering end-to-end persistence.
+- [x] Add unit tests for consumer + idempotency.
+- [x] Add integration test covering end-to-end persistence.

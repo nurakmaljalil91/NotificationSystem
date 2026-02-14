@@ -1,9 +1,5 @@
-using Application.Common.Interfaces;
 using Application.Common.Messaging.Events;
-using Domain.Enums;
 using MassTransit;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Consumers;
 
@@ -12,46 +8,20 @@ namespace Infrastructure.Consumers;
 /// </summary>
 public class NotificationDeliveryEnqueuedConsumer : IConsumer<NotificationDeliveryEnqueuedV1>
 {
-    private readonly IApplicationDbContext _context;
-    private readonly IClockService _clockService;
-    private readonly ILogger<NotificationDeliveryEnqueuedConsumer> _logger;
+    private readonly NotificationDeliveryEnqueuedHandler _handler;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotificationDeliveryEnqueuedConsumer"/> class.
     /// </summary>
-    /// <param name="context">The application database context.</param>
-    /// <param name="clockService">The clock service for timestamps.</param>
-    /// <param name="logger">The logger instance.</param>
     public NotificationDeliveryEnqueuedConsumer(
-        IApplicationDbContext context,
-        IClockService clockService,
-        ILogger<NotificationDeliveryEnqueuedConsumer> logger)
+        NotificationDeliveryEnqueuedHandler handler)
     {
-        _context = context;
-        _clockService = clockService;
-        _logger = logger;
+        _handler = handler;
     }
 
     /// <inheritdoc />
     public async Task Consume(ConsumeContext<NotificationDeliveryEnqueuedV1> context)
     {
-        var delivery = await _context.NotificationDeliveries
-            .FirstOrDefaultAsync(
-                item => item.Id == context.Message.DeliveryId,
-                context.CancellationToken);
-
-        if (delivery is null)
-        {
-            _logger.LogWarning(
-                "Notification delivery {DeliveryId} not found.",
-                context.Message.DeliveryId);
-            return;
-        }
-
-        delivery.Status = DeliveryStatus.Sending;
-        delivery.AttemptCount += 1;
-        delivery.LastAttemptedAt = _clockService.Now;
-
-        await _context.SaveChangesAsync(context.CancellationToken);
+        await _handler.Handle(context.Message.DeliveryId, context.CancellationToken);
     }
 }

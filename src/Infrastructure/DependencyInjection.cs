@@ -8,6 +8,7 @@ using Infrastructure.Data;
 using Infrastructure.Data.Interceptors;
 using Infrastructure.Messaging;
 using Infrastructure.Services;
+using Infrastructure.Services.Providers;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -86,6 +87,13 @@ public static class DependencyInjection
         services.AddTransient<IClockService, ClockService>();
         services.AddTransient<INotificationPublisher, NotificationPublisher>();
         services.AddTransient<NotificationRequestedHandler>();
+        services.AddTransient<NotificationDeliveryEnqueuedHandler>();
+
+        services.AddSingleton<INotificationDeliveryProvider, EmailNotificationProvider>();
+        services.AddSingleton<INotificationDeliveryProvider, SmsNotificationProvider>();
+        services.AddSingleton<INotificationDeliveryProvider, WhatsAppNotificationProvider>();
+        services.AddSingleton<INotificationDeliveryProvider, PushNotificationProvider>();
+        services.AddSingleton<INotificationDeliveryProviderResolver, NotificationDeliveryProviderResolver>();
 
         var messageBrokerSettings = new MessageBrokerSettings();
         configuration.GetSection(MessageBrokerSettings.SectionName).Bind(messageBrokerSettings);

@@ -1,4 +1,4 @@
-using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using Application.Common.Messaging.Events;
 using Infrastructure.Consumers;
 using Infrastructure.Data;
@@ -12,8 +12,15 @@ using Notification.Contracts.Models;
 
 namespace Infrastructure.UnitTests.Consumers;
 
+/// <summary>
+/// Tests for the NotificationRequestedHandler consumer.
+/// </summary>
 public class NotificationRequestedConsumerTests
 {
+    /// <summary>
+    /// Verifies that handling a notification request persists the notification to the database
+    /// and publishes a delivery enqueued event.
+    /// </summary>
     [Fact]
     public async Task Handle_PersistsNotificationAndPublishesDelivery()
     {
@@ -62,6 +69,10 @@ public class NotificationRequestedConsumerTests
         Assert.Single(stored.Recipients[0].Deliveries);
     }
 
+    /// <summary>
+    /// Verifies that handling the same notification request multiple times is idempotent
+    /// and only creates a single notification in the database.
+    /// </summary>
     [Fact]
     public async Task Handle_IsIdempotentForSameSourceEvent()
     {

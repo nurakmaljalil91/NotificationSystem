@@ -1,3 +1,4 @@
+﻿#nullable enable
 using Infrastructure.Data;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -7,15 +8,25 @@ using Notification.Contracts.Models;
 
 namespace IntegrationTests;
 
+/// <summary>
+/// Integration tests for notification requested functionality.
+/// </summary>
 public class NotificationRequestedIntegrationTests : IClassFixture<ApiFactory>
 {
     private readonly ApiFactory _factory;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotificationRequestedIntegrationTests"/> class.
+    /// </summary>
+    /// <param name="factory">The API factory for creating test clients.</param>
     public NotificationRequestedIntegrationTests(ApiFactory factory)
     {
         _factory = factory;
     }
 
+    /// <summary>
+    /// Tests that publishing a notification request persists the notification to the database.
+    /// </summary>
     [Fact]
     public async Task PublishRequest_PersistsNotification()
     {

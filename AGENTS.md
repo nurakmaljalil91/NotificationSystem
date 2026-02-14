@@ -24,3 +24,11 @@ This repository is a new microservice responsible for application notifications.
 - `lib/` contains shared or generated code.
 - `tests/` contains unit/integration tests.
 
+## Instructions
+- Always check TODO.md for specific tasks and priorities.
+- Check done tasks in TODO.md for reference on completed work.
+- Follow the defined architecture and conventions for any new code.
+- Always write xml documentation comments for public methods and classes.
+- When there is null in the file, always write `#enable nullable` at the top of C# files and handle nullability properly.
+- When writing tests, follow the Arrange-Act-Assert pattern and use descriptive test method names.
+- Always ensure that any new code is covered by unit tests, and consider integration tests for end-to-end scenarios.
