@@ -21,6 +21,6 @@
 - [x] (Optional) Add SignalR/WebSocket for real-time in-app updates.
 
 ## Ops and tests
-- [ ] Add health checks for DB and RabbitMQ.
+- [x] Add health checks for DB and RabbitMQ.
 - [x] Add unit tests for consumer + idempotency.
 - [x] Add integration test covering end-to-end persistence.
