@@ -19,6 +19,7 @@ COPY ["src/WebAPI/WebAPI.csproj", "src/WebAPI/"]
 COPY ["src/Application/Application.csproj", "src/Application/"]
 COPY ["src/Domain/Domain.csproj", "src/Domain/"]
 COPY ["lib/Mediator/Mediator.csproj", "lib/Mediator/"]
+COPY ["lib/Notification.Contracts/Notification.Contracts.csproj", "lib/Notification.Contracts/"]
 COPY ["src/Infrastructure/Infrastructure.csproj", "src/Infrastructure/"]
 RUN dotnet restore "./src/WebAPI/WebAPI.csproj"
 COPY . .
