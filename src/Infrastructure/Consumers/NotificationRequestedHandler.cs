@@ -28,6 +28,7 @@ public class NotificationRequestedHandler
     /// <param name="context">The application database context.</param>
     /// <param name="clockService">The clock service for timestamps.</param>
     /// <param name="notificationPublisher">The publisher for follow-up events.</param>
+    /// <param name="realtimePublisher">The realtime publisher for in-app notifications.</param>
     /// <param name="logger">The logger instance.</param>
     public NotificationRequestedHandler(
         IApplicationDbContext context,

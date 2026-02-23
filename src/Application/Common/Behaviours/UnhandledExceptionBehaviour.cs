@@ -28,6 +28,7 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
         {
             return await next();
         }
+#pragma warning disable S2139 // intentional: log request context before propagating
         catch (Exception ex)
         {
             var requestName = typeof(TRequest).Name;
@@ -36,5 +37,6 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
 
             throw;
         }
+#pragma warning restore S2139
     }
 }

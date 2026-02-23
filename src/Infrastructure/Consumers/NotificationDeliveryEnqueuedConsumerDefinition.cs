@@ -20,7 +20,8 @@ public class NotificationDeliveryEnqueuedConsumerDefinition
     /// <inheritdoc />
     protected override void ConfigureConsumer(
         IReceiveEndpointConfigurator endpointConfigurator,
-        IConsumerConfigurator<NotificationDeliveryEnqueuedConsumer> consumerConfigurator)
+        IConsumerConfigurator<NotificationDeliveryEnqueuedConsumer> consumerConfigurator,
+        IRegistrationContext context)
     {
         endpointConfigurator.UseMessageRetry(retry => retry.Interval(5, TimeSpan.FromSeconds(10)));
     }

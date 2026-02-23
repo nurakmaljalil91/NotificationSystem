@@ -1,3 +1,4 @@
+#nullable enable
 using Domain.Enums;
 
 namespace Application.Common.Interfaces;

@@ -1,4 +1,5 @@
-﻿using Domain.Common;
+﻿#nullable enable
+using Domain.Common;
 
 namespace Domain.UnitTests.Common;
 
@@ -24,10 +25,12 @@ public class ValueObjectTests
             yield return Text!;
         }
 
-        public static bool operator ==(SampleValueObject left, SampleValueObject right)
+#pragma warning disable S3875 // intentional: testing ValueObject operator== behavior
+        public static bool operator ==(SampleValueObject? left, SampleValueObject? right)
             => EqualOperator(left, right);
+#pragma warning restore S3875
 
-        public static bool operator !=(SampleValueObject left, SampleValueObject right)
+        public static bool operator !=(SampleValueObject? left, SampleValueObject? right)
             => NotEqualOperator(left, right);
 
         public override bool Equals(object? obj)

@@ -1,3 +1,4 @@
+#nullable enable
 namespace Notification.Contracts.Models;
 
 /// <summary>

@@ -103,11 +103,10 @@ public sealed class NotificationsControllerIntegrationTests : ApiTestBase, IClas
 
     private sealed class NotificationResponse
     {
+#pragma warning disable S3459, S1144 // Properties are assigned via JSON deserialization
         public long NotificationId { get; init; }
-        public string? RecipientId { get; set; }
-        public string? Title { get; set; }
-        public string? Body { get; set; }
-        public bool IsRead { get; set; }
-        public DateTimeOffset? ReadAtUtc { get; set; }
+        public bool IsRead { get; init; }
+        public DateTimeOffset? ReadAtUtc { get; init; }
+#pragma warning restore S3459, S1144
     }
 }

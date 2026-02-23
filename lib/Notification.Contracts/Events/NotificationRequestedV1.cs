@@ -1,3 +1,4 @@
+#nullable enable
 using Notification.Contracts.Models;
 
 namespace Notification.Contracts.Events;

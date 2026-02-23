@@ -16,4 +16,9 @@
              Text="Building $(MSBuildProjectName) | Configuration=$(Configuration) | TFM=$(TargetFramework)" />
   </Target>
 
+  <!-- Disable XML docs for test projects (IsTestProject is set in .csproj, evaluated after Directory.Build.props) -->
+  <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
 </Project>

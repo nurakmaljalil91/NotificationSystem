@@ -1,4 +1,4 @@
-﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+﻿#pragma warning disable CS1591, S1118, S3903 // Missing XML comment / top-level statements implicit class
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;

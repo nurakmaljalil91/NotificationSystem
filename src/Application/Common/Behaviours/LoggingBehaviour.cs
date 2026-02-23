@@ -47,12 +47,14 @@ public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
             _logger.LogInformation("Handled {RequestName} in {Elapsed:0.000} ms", requestName, elapsed);
             return response;
         }
+#pragma warning disable S2139 // intentional: log user context before propagating
         catch (Exception ex)
         {
             var userId = _user.Username ?? "Unknown";
             _logger.LogError(ex, "Error handling {RequestName} for user {UserId}: {ExceptionMessage}", requestName, userId, ex.Message);
-            throw; // Re-throw the original exception to avoid throwing System.Exception directly
+            throw;
         }
+#pragma warning restore S2139
     }
 }
 

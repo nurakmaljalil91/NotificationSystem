@@ -3,6 +3,8 @@
   <PropertyGroup>
      <RootNamespace>WebAPI.UnitTests</RootNamespace>
      <AssemblyName>WebAPI.UnitTests</AssemblyName>
+     <IsTestProject>true</IsTestProject>
+     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
