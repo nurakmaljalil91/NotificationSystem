@@ -1,0 +1,70 @@
+name: Deploy Notification System
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: 'Target environment (used for environment-specific config)'
+        required: true
+        default: 'testing'
+        options:
+          - testing
+          - production
+      server:
+        type: choice
+        description: 'Target server to deploy to'
+        required: true
+        default: 'testing'
+        options:
+          - testing
+          - production
+      image_tag:
+        type: string
+        description: 'Docker image tag to deploy (leave blank to use latest built tag)'
+        required: false
+
+jobs:
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment }} on ${{ github.event.inputs.server }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+      - name: Resolve image tag
+        id: resolve
+        run: |
+          IMAGE_TAG="${{ github.event.inputs.image_tag }}"
+          if [ -z "$IMAGE_TAG" ]; then
+            IMAGE_TAG="${{ vars.NOTIFICATION_IMAGE_TAG }}"
+          fi
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          echo "Using image tag: $IMAGE_TAG"
+
+      - name: Deploy the Notification System
+        uses: appleboy/ssh-action@v1.2.4
+        with:
+          host: ${{ github.event.inputs.server == 'testing' && secrets.TESTING_DROPLET_IP || secrets.PRODUCTION_DROPLET_IP }}
+          username: ${{ secrets.DROPLET_USERNAME }}
+          password: ${{ github.event.inputs.server == 'testing' && secrets.TESTING_DROPLET_PASSWORD || secrets.PRODUCTION_DROPLET_PASSWORD }}
+          script: |
+            cd ~/home
+            echo "Deploying notification-system:${{ env.IMAGE_TAG }} to ${{ github.event.inputs.environment }}"
+            export NOTIFICATION_IMAGE_TAG=${{ env.IMAGE_TAG }}
+
+            if [ -f .env ]; then
+              echo ".env file exists."
+            else
+              echo ".env file does not exist. Creating it."
+              touch .env
+            fi
+
+            # Add or update NOTIFICATION_IMAGE_TAG in the .env file
+            if grep -q "NOTIFICATION_IMAGE_TAG=" .env; then
+              sed -i "s/^NOTIFICATION_IMAGE_TAG=.*/NOTIFICATION_IMAGE_TAG=$NOTIFICATION_IMAGE_TAG/" .env
+            else
+              echo "NOTIFICATION_IMAGE_TAG=$NOTIFICATION_IMAGE_TAG" >> .env
+            fi
+
+            docker compose up -d
+            docker system prune -a -f || true
+
