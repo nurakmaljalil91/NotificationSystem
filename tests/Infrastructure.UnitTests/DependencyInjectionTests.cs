@@ -5,8 +5,10 @@ using Infrastructure;
 using Infrastructure.Data;
 using Infrastructure.Data.Interceptors;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Infrastructure.UnitTests;
 
@@ -24,6 +26,7 @@ public class DependencyInjectionTests
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddScoped<IUser>(_ => new TestUser("tester"));
+        services.AddSingleton<IHostEnvironment>(new TestHostEnvironment());
         var configuration = BuildConfiguration(new Dictionary<string, string?>
         {
             ["UseInMemoryDatabase"] = "true"
@@ -77,5 +80,16 @@ public class DependencyInjectionTests
         public string? Username { get; }
 
         public List<string> GetRoles() => new();
+    }
+
+    private sealed class TestHostEnvironment : IHostEnvironment
+    {
+        public string EnvironmentName { get; set; } = Environments.Development;
+
+        public string ApplicationName { get; set; } = nameof(Infrastructure.UnitTests);
+
+        public string ContentRootPath { get; set; } = AppContext.BaseDirectory;
+
+        public IFileProvider ContentRootFileProvider { get; set; } = new NullFileProvider();
     }
 }

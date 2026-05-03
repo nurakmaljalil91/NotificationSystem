@@ -1,5 +1,7 @@
-﻿using Infrastructure.Data;
+using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Infrastructure.UnitTests.Data;
@@ -21,7 +23,8 @@ public class ApplicationDbContextInitialiserTests
 
         await using var context = new ApplicationDbContext(options);
         var logger = NullLogger<ApplicationDbContextInitialiser>.Instance;
-        var initialiser = new ApplicationDbContextInitialiser(logger, context);
+        var environment = new TestHostEnvironment();
+        var initialiser = new ApplicationDbContextInitialiser(logger, context, environment);
 
         await initialiser.TrySeedAsync();
 
@@ -33,5 +36,16 @@ public class ApplicationDbContextInitialiserTests
         Assert.NotNull(notification);
         Assert.Single(notification!.Recipients);
         Assert.Single(notification.Recipients[0].Deliveries);
+    }
+
+    private sealed class TestHostEnvironment : IHostEnvironment
+    {
+        public string EnvironmentName { get; set; } = Environments.Development;
+
+        public string ApplicationName { get; set; } = nameof(Infrastructure.UnitTests);
+
+        public string ContentRootPath { get; set; } = AppContext.BaseDirectory;
+
+        public IFileProvider ContentRootFileProvider { get; set; } = new NullFileProvider();
     }
 }
