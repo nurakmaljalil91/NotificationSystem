@@ -6,9 +6,6 @@ permissions:
 on:
   push:
     branches: [ main, develop ]
-    paths:
-      - 'backends/NotificationSystem/**'
-      - '.github/workflows/build-notification-system.yml'
   workflow_dispatch:
 
 jobs:
