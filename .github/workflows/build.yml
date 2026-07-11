@@ -1,0 +1,120 @@
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - "**"
+  push:
+    branches:
+      - "**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_VERSION: "10.0.x"
+  IMAGE_NAME: notification-system
+  IMAGE_NAMESPACE: ${{ secrets.DOCKER_USERNAME || 'local' }}
+
+jobs:
+  build-test-image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Resolve repository paths
+        id: paths
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          solution_file="$(find . -maxdepth 1 -name '*.slnx' -print -quit)"
+          production_settings="src/WebAPI/appsettings.Production.json"
+
+          if [ -z "$solution_file" ]; then
+            echo "No .slnx file found in repository root." >&2
+            exit 1
+          fi
+
+          if [ ! -f "$production_settings" ]; then
+            echo "Expected production settings file not found at $production_settings." >&2
+            exit 1
+          fi
+
+          echo "solution_file=$solution_file" >> "$GITHUB_OUTPUT"
+          echo "production_settings=$production_settings" >> "$GITHUB_OUTPUT"
+
+      - name: Restore
+        run: dotnet restore "${{ steps.paths.outputs.solution_file }}"
+
+      - name: Build
+        run: dotnet build "${{ steps.paths.outputs.solution_file }}" --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test "${{ steps.paths.outputs.solution_file }}" --configuration Release --no-build
+
+      - name: Generate image tag
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          image_tag="$(date -u +'%Y.%m.%d').${GITHUB_RUN_NUMBER}"
+          build_version="build-${image_tag}"
+          echo "image_tag=$image_tag" >> "$GITHUB_OUTPUT"
+          echo "build_version=$build_version" >> "$GITHUB_OUTPUT"
+          echo "IMAGE_TAG=$image_tag" >> "$GITHUB_ENV"
+          echo "BUILD_VERSION=$build_version" >> "$GITHUB_ENV"
+
+      - name: Inject BuildVersion into production settings
+        env:
+          BUILD_VERSION: ${{ steps.version.outputs.build_version }}
+          PRODUCTION_SETTINGS: ${{ steps.paths.outputs.production_settings }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python - <<'PY'
+          from pathlib import Path
+          import os
+          import sys
+
+          settings_path = Path(os.environ["PRODUCTION_SETTINGS"])
+          placeholder = "#{BUILD_VERSION}#"
+          build_version = os.environ["BUILD_VERSION"]
+          content = settings_path.read_text(encoding="utf-8")
+
+          if placeholder not in content:
+              sys.exit(f"BuildVersion placeholder '{placeholder}' was not found in {settings_path}.")
+
+          settings_path.write_text(content.replace(placeholder, build_version), encoding="utf-8")
+          PY
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: ${{ github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
+          build-args: |
+            BUILD_CONFIGURATION=Release
+          tags: |
+            ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.image_tag }}
+            ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:latest
