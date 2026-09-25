@@ -65,6 +65,16 @@ jobs:
               echo "NOTIFICATION_IMAGE_TAG=$NOTIFICATION_IMAGE_TAG" >> .env
             fi
 
-            docker compose up -d
-            docker system prune -a -f || true
+            grep "^NOTIFICATION_IMAGE_TAG=" .env
+
+            # Deploy only this service. A full `docker compose up` would also pull every
+            # other image in the stack and fail the deploy if any one of them is unavailable.
+            set -e
+            docker compose pull notification-system
+            docker compose up -d --no-deps notification-system
+            docker compose ps notification-system
+
+            # Remove superseded images of this service only; other services' images are kept
+            docker images nurakmaljalil91/notification-system --format '{{.Repository}}:{{.Tag}}' | grep -v ":$NOTIFICATION_IMAGE_TAG$" | xargs -r docker rmi || true
+            docker image prune -f
 
