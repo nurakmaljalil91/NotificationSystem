@@ -35,6 +35,7 @@
     <PackageVersion Include="MassTransit" Version="8.5.0" />
     <PackageVersion Include="MassTransit.RabbitMQ" Version="8.5.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     <!-- Packages for Domain -->
     <PackageVersion Include="NodaTime" Version="3.2.3" />
