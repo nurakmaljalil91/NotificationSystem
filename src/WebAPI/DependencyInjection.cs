@@ -136,6 +136,7 @@ public static class DependencyInjection
         services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
 
         services.AddTransient<ExceptionHandlingMiddleware>();
+        services.AddTransient<TokenScopeMiddleware>();
         services.AddSignalR();
         services.AddSingleton<INotificationRealtimePublisher, SignalRNotificationRealtimePublisher>();
 
