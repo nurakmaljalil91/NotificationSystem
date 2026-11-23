@@ -15,6 +15,9 @@ public class ExceptionHandlingMiddlewareTests
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
+    /// <summary>
+    /// Verifies that a validation exception is translated into a 400 response.
+    /// </summary>
     [Fact]
     public async Task InvokeAsync_HandlesValidationException()
     {
@@ -33,6 +36,9 @@ public class ExceptionHandlingMiddlewareTests
         Assert.True(response.Errors!.ContainsKey("Title"));
     }
 
+    /// <summary>
+    /// Verifies that a not found exception is translated into a 404 response.
+    /// </summary>
     [Fact]
     public async Task InvokeAsync_HandlesNotFoundException()
     {
@@ -46,6 +52,9 @@ public class ExceptionHandlingMiddlewareTests
         Assert.Equal("Missing", response.Message);
     }
 
+    /// <summary>
+    /// Verifies that a forbidden access exception is translated into a 403 response.
+    /// </summary>
     [Fact]
     public async Task InvokeAsync_HandlesForbiddenAccessException()
     {
@@ -59,6 +68,9 @@ public class ExceptionHandlingMiddlewareTests
         Assert.Equal("Forbidden.", response.Message);
     }
 
+    /// <summary>
+    /// Verifies that an unhandled exception is translated into a 500 response.
+    /// </summary>
     [Fact]
     public async Task InvokeAsync_HandlesUnknownException()
     {

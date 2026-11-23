@@ -14,6 +14,9 @@ public class CustomAuthorizationMiddlewareResultHandlerTests
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
+    /// <summary>
+    /// Verifies that a forbidden authorization result writes a 403 response body.
+    /// </summary>
     [Fact]
     public async Task HandleAsync_WritesForbiddenResponse()
     {
@@ -28,6 +31,9 @@ public class CustomAuthorizationMiddlewareResultHandlerTests
         Assert.Equal("Forbidden.", response.Message);
     }
 
+    /// <summary>
+    /// Verifies that a challenged authorization result writes a 401 response body.
+    /// </summary>
     [Fact]
     public async Task HandleAsync_WritesUnauthorizedResponse()
     {

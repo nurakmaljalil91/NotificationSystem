@@ -4,7 +4,7 @@
      <RootNamespace>Infrastructure.UnitTests</RootNamespace>
      <AssemblyName>Infrastructure.UnitTests</AssemblyName>
      <IsTestProject>true</IsTestProject>
-     <GenerateDocumentationFile>false</GenerateDocumentationFile>
+     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

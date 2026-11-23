@@ -8,6 +8,9 @@ namespace WebAPI.UnitTests.Middlewares;
 /// </summary>
 public class CorrelationIdMiddlewareTests
 {
+    /// <summary>
+    /// Verifies that the correlation id from the request header is reused.
+    /// </summary>
     [Fact]
     public async Task InvokeAsync_UsesRequestHeaderWhenProvided()
     {
@@ -27,6 +30,9 @@ public class CorrelationIdMiddlewareTests
         Assert.Equal("corr-123", context.Response.Headers["X-Correlation-ID"].ToString());
     }
 
+    /// <summary>
+    /// Verifies that a correlation id is generated when the request does not provide one.
+    /// </summary>
     [Fact]
     public async Task InvokeAsync_GeneratesCorrelationIdWhenMissing()
     {

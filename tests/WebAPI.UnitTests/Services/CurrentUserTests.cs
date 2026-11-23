@@ -9,6 +9,9 @@ namespace WebAPI.UnitTests.Services;
 /// </summary>
 public class CurrentUserTests
 {
+    /// <summary>
+    /// Verifies that the username is read from the name identifier claim.
+    /// </summary>
     [Fact]
     public void Username_ReturnsNameIdentifierClaim()
     {
@@ -26,6 +29,9 @@ public class CurrentUserTests
         Assert.Equal("alice", currentUser.Username);
     }
 
+    /// <summary>
+    /// Verifies that roles are read from the role claims.
+    /// </summary>
     [Fact]
     public void GetRoles_ReturnsRoleClaims()
     {
@@ -47,6 +53,9 @@ public class CurrentUserTests
         Assert.Contains("Support", roles);
     }
 
+    /// <summary>
+    /// Verifies that no roles are returned when there is no HTTP context.
+    /// </summary>
     [Fact]
     public void GetRoles_ReturnsEmptyWhenNoContext()
     {
